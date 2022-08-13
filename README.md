@@ -1,3 +1,3 @@
 # Labyrinttipeli
 
-Labyrinttipeli Maille
+Labyrinttipeli Maille & Hugolle
