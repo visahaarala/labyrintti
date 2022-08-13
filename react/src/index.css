@@ -1,5 +1,12 @@
 main {
   margin: 3rem auto;
-  width: 90%;
-  max-width: 40rem;
+  /* width: 90%; */
+  /* max-width: 40rem; */
+  text-align: center;
+}
+
+.maze {
+  font-family: 'Courier New', Courier, monospace;
+  line-height: 55%;
+  font-size: 1rem;
 }
