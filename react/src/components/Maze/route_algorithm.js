@@ -1,6 +1,6 @@
-import { directions } from './maze_algorithm';
+import { directions } from './directions';
 
-export const AddRoute = (maze) => {
+export const FindRoute = (maze) => {
   console.log('----- Route Algorithm -----');
   // console.log('maze', maze);
 
@@ -29,13 +29,13 @@ export const AddRoute = (maze) => {
       };
       // Check that new coordinates are within the maze
       if (
-        nc.x >= 0 &&
-        nc.x < maze.wallsArray.length &&
         nc.y >= 0 &&
-        nc.y < maze.wallsArray[0].length
+        nc.y < maze.wallsArray.length &&
+        nc.x >= 0 &&
+        nc.x < maze.wallsArray[0].length
       ) {
         // Check that new coordinates point to an open space (not a wall)
-        if (!maze.wallsArray[nc.x][nc.y]) {
+        if (!maze.wallsArray[nc.y][nc.x]) {
           // Check that new coordinates are not in the usedCoordinates list
           if (
             !visitedCoordinates.find((uc) => uc.x === nc.x && uc.y === nc.y)
@@ -57,10 +57,10 @@ export const AddRoute = (maze) => {
 
   recursiveFinder(maze.beginning);
 
-  let routeLength = 0;
+  const route = [];
+
   const recursiveSolution = (coordinates) => {
-    routeLength++;
-    maze.wallsArray[coordinates.x][coordinates.y] = 3;
+    route.push(coordinates);
     const step = completedSteps.find(
       (step) => step.to.x === coordinates.x && step.to.y === coordinates.y
     );
@@ -70,5 +70,7 @@ export const AddRoute = (maze) => {
   };
   recursiveSolution(maze.end);
 
-  console.log('route length', routeLength);
+  console.log('route length', route.length);
+
+  return route;
 };

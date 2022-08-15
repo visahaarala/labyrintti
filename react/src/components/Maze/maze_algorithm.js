@@ -1,24 +1,12 @@
-export const directions = [
-  { dx: 1, dy: 0 },
-  { dx: 0, dy: 1 },
-  { dx: -1, dy: 0 },
-  { dx: 0, dy: -1 },
-];
+import { directions } from './directions';
 
 export const CreateMaze = ({ x_max, y_max }) => {
   console.log('----- Maze Algorithm -----');
-  // const x_max = dimensions[0];
-  // const y_max = dimensions[1];
 
   const routesArray = [];
   const usedCoordinates = [];
 
-  // Start at [0,0]
-  // usedCoordinates.push([0, 0]);
-
-  // OR
-
-  // Start at the middle
+  // Start at the middle to create a more difficult maze
   usedCoordinates.push({
     x: Math.floor((y_max - 1) / 2),
     y: Math.floor((x_max - 1) / 2),
@@ -48,7 +36,8 @@ export const CreateMaze = ({ x_max, y_max }) => {
       }
     });
     if (validNeighbors.length === 0) {
-      latestCoordinatesIndex--; // go backwards in the usedCoordinates list to find another route
+      // go backwards in the usedCoordinates list to find a valid neighbor
+      latestCoordinatesIndex--;
     } else {
       const newNeighborIndex = Math.floor(
         Math.random() * validNeighbors.length
@@ -59,52 +48,52 @@ export const CreateMaze = ({ x_max, y_max }) => {
       latestCoordinatesIndex = -1;
     }
   }
-  // console.log('usedCoordinates', usedCoordinates);
   console.log('dimensions:', x_max, 'x', y_max);
-  // console.log('routes:', routesArray.length);
   console.log('backtracking recursion maze creation steps:', maze_searches);
   console.log('going backwards', goingBackwards);
   console.log('useful steps', maze_searches - goingBackwards);
 
-  // Create two dimensional array filled with walls
+  // Create a two dimensional array filled with walls
   //
-  // x range: 0 ... (maze.x_max * 2 - 1)
-  // y range: 0 ... (maze.y_max * 2 - 1)
+  // x range: 0 ... (maze.x_max * 2 + 1)
+  // y range: 0 ... (maze.y_max * 2 + 1)
   //
   // 1 === wall
   // 0 === no wall
   const wallsArray = [];
 
-  for (let i = 0; i < x_max * 2 + 1; i++) {
+  for (let i = 0; i < y_max * 2 + 1; i++) {
     const row = [];
-    for (let j = 0; j < y_max * 2 + 1; j++) {
+    for (let j = 0; j < x_max * 2 + 1; j++) {
       row.push(1);
     }
     wallsArray.push(row);
   }
 
-  // make routes (false, no wall) to the array
-  // starts with an X at "[0,0]"" which is actually [1,1] in the walls array because [0,0] is the corner wall
-  // wallsArray[1][1] = false;
+  // make routes (false === no wall) to the array
+  // the routesArray does not include walls, thus
+  // x1 = route[0].x * 2 + 1 to take into account the walls
+  // ... etc
   routesArray.forEach((route) => {
-    // console.log(route);
     const x1 = route[0].x * 2 + 1;
     const x2 = route[1].x * 2 + 1;
     const y1 = route[0].y * 2 + 1;
     const y2 = route[1].y * 2 + 1;
 
-    wallsArray[x1][y1] = 0; // this point gets changed false twice after the first routes
-    wallsArray[(x1 + x2) / 2][(y1 + y2) / 2] = 0;
-    wallsArray[x2][y2] = 0;
+    // this point gets done twice after the first route
+    wallsArray[y1][x1] = 0; 
+    // the "middle point" between the routesArray points
+    // (because of walls)
+    wallsArray[(y1 + y2) / 2][(x1 + x2) / 2] = 0; 
+    wallsArray[y2][x2] = 0;
   });
 
   // create entry & exit points
   // at opposite corners, top & bottom
   const beginning = { x: 0, y: 1 };
   const end = { x: x_max * 2, y: y_max * 2 - 1 };
-
-  wallsArray[beginning.x][beginning.y] = 0;
-  wallsArray[end.x][end.y] = 0;
+  wallsArray[beginning.y][beginning.x] = 0;
+  wallsArray[end.y][end.x] = 0;
 
   return { wallsArray, beginning, end, x_max, y_max };
 };
