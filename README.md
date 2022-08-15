@@ -1,3 +1,3 @@
-# Labyrinttipeli
+# Sokkelo
 
-Labyrinttipeli Maille & Hugolle
+Sokkelo Maille & Hugolle
