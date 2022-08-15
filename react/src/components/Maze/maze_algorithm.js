@@ -1,4 +1,5 @@
-import { directions } from './directions';
+import { directions, newCoordinates } from './directions';
+import { FindRoute } from './route_algorithm';
 
 export const CreateMaze = ({ x_max, y_max }) => {
   console.log('----- Maze Algorithm -----');
@@ -23,18 +24,23 @@ export const CreateMaze = ({ x_max, y_max }) => {
     // latest coordinates
     const latestCoordinates = usedCoordinates.at(latestCoordinatesIndex);
     const validNeighbors = [];
-    directions.forEach((dir) => {
+
+    for (const key in directions) {
       // new coordinates
-      const nc = {
-        x: latestCoordinates.x + dir.dx,
-        y: latestCoordinates.y + dir.dy,
-      };
+      const nc = newCoordinates({
+        coordinates: latestCoordinates,
+        direction: directions[key],
+      });
+
+      // check if new coordinates are within the maze
       if (nc.x >= 0 && nc.x < x_max && nc.y >= 0 && nc.y < y_max) {
+        // check if new coordinates are not yet used
         if (!usedCoordinates.find((uc) => uc.x === nc.x && uc.y === nc.y)) {
           validNeighbors.push(nc);
         }
       }
-    });
+    }
+
     if (validNeighbors.length === 0) {
       // go backwards in the usedCoordinates list to find a valid neighbor
       latestCoordinatesIndex--;
@@ -81,19 +87,20 @@ export const CreateMaze = ({ x_max, y_max }) => {
     const y2 = route[1].y * 2 + 1;
 
     // this point gets done twice after the first route
-    wallsArray[y1][x1] = 0; 
+    wallsArray[y1][x1] = 0;
     // the "middle point" between the routesArray points
     // (because of walls)
-    wallsArray[(y1 + y2) / 2][(x1 + x2) / 2] = 0; 
+    wallsArray[(y1 + y2) / 2][(x1 + x2) / 2] = 0;
     wallsArray[y2][x2] = 0;
   });
 
-  // create entry & exit points
-  // at opposite corners, top & bottom
+  // create entry & exit point at opposite corners
   const beginning = { x: 0, y: 1 };
   const end = { x: x_max * 2, y: y_max * 2 - 1 };
   wallsArray[beginning.y][beginning.x] = 0;
   wallsArray[end.y][end.x] = 0;
 
-  return { wallsArray, beginning, end, x_max, y_max };
+  const route = FindRoute({ wallsArray, beginning, end });
+
+  return { wallsArray, beginning, end, x_max, y_max, route };
 };

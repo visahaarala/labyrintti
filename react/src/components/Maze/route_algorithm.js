@@ -1,6 +1,6 @@
-import { directions } from './directions';
+import { directions, newCoordinates } from './directions';
 
-export const FindRoute = (maze) => {
+export const FindRoute = ({ wallsArray, beginning, end }) => {
   console.log('----- Route Algorithm -----');
   // console.log('maze', maze);
 
@@ -13,7 +13,7 @@ export const FindRoute = (maze) => {
 
     // first check if current coordinates are the end of the maze
     // if so, stop searching
-    if (coordinates.x === maze.end.x && coordinates.y === maze.end.y) {
+    if (coordinates.x === end.x && coordinates.y === end.y) {
       return;
     }
 
@@ -21,21 +21,23 @@ export const FindRoute = (maze) => {
     const validNeighbors = [];
 
     // scan through directions
-    directions.forEach((dir) => {
+    // directions.forEach((dir) => {
+    for (const key in directions) {
       // New coordinates
-      const nc = {
-        x: coordinates.x + dir.dx,
-        y: coordinates.y + dir.dy,
-      };
+      const nc = newCoordinates({
+        coordinates,
+        direction: directions[key],
+      });
+
       // Check that new coordinates are within the maze
       if (
         nc.y >= 0 &&
-        nc.y < maze.wallsArray.length &&
+        nc.y < wallsArray.length &&
         nc.x >= 0 &&
-        nc.x < maze.wallsArray[0].length
+        nc.x < wallsArray[0].length
       ) {
         // Check that new coordinates point to an open space (not a wall)
-        if (!maze.wallsArray[nc.y][nc.x]) {
+        if (!wallsArray[nc.y][nc.x]) {
           // Check that new coordinates are not in the usedCoordinates list
           if (
             !visitedCoordinates.find((uc) => uc.x === nc.x && uc.y === nc.y)
@@ -44,7 +46,7 @@ export const FindRoute = (maze) => {
           }
         }
       }
-    });
+    }
 
     validNeighbors.forEach((neighbor) => {
       // for each of the valid neighbors:
@@ -55,7 +57,7 @@ export const FindRoute = (maze) => {
     });
   };
 
-  recursiveFinder(maze.beginning);
+  recursiveFinder(beginning);
 
   const route = [];
 
@@ -68,7 +70,7 @@ export const FindRoute = (maze) => {
       recursiveSolution(step.from);
     }
   };
-  recursiveSolution(maze.end);
+  recursiveSolution(end);
 
   console.log('route length', route.length);
 

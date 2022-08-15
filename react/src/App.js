@@ -1,11 +1,11 @@
-import Maze from "./components/Maze/Maze";
+import Maze from './components/Maze/Maze';
 
 function App() {
 
   return (
     <main>
       <h1>labyrintti</h1>
-      <Maze />
+      <Maze x_max={30} y_max={20} />
     </main>
   );
 }
