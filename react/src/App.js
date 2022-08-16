@@ -4,7 +4,7 @@ function App() {
 
   return (
     <main>
-      <h1>labyrintti</h1>
+      <h1>sokkelo</h1>
       <Maze x_max={30} y_max={20} />
     </main>
   );
