@@ -5,7 +5,7 @@ function App() {
   return (
     <main>
       <h1>sokkelo</h1>
-      <Maze x_max={30} y_max={20} />
+      <Maze x_max={33} y_max={22} />
     </main>
   );
 }
